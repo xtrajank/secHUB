@@ -1,3 +1,0 @@
-'''
-Audit logic for rules
-'''

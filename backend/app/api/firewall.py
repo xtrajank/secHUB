@@ -1,3 +1,0 @@
-'''
-Firewall rule audit endpoints
-'''
