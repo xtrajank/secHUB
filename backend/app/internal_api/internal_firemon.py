@@ -1,18 +1,38 @@
 '''
-secHUB // backend // internal_api // internal_firemon.py
-Description: API wrapper for pulling data from FireMon. Forms and sends the HTTP requests. Returns JSONified data.
+API wrapper for pulling data from FireMon. Forms and sends the HTTP requests. Returns JSONified data.
+
+TODO: This is an example assuming how the endpoints are defined. An updated example would have the real paths to the data.
 
 Features:
+    - Get firewall data
     - Get changes made to firewall
+    - Get policy violation reports
 '''
-import httpx
-from config import INTERNAL_API_BASE, INTERNAL_API_KEY
+from backend.app.internal_api.InternalAPIClient import InternalAPIClient as IAPIC
+from backend.app.config import INTERNAL_API_BASE, INTERNAL_API_KEY
+
+firemon_api = IAPIC(INTERNAL_API_BASE, INTERNAL_API_KEY)
+
+async def fetch_firewall_data():
+    '''
+    Get firewall base data.
+
+    ie. rule ID, name, description, source/destination IPs, ports/protocols, action, rule hit count, rule last date hit, rule status
+    '''
+    return await firemon_api.get("/firewall")
 
 async def fetch_firewall_changes():
-    url = f"{INTERNAL_API_BASE}/firewall/changes"
-    headers = {"Authorization": f"Bearer {INTERNAL_API_KEY}"}
+    '''
+    Get changes made to firewall.
 
-    async with httpx.AsyncClient(timeout=10.0) as client:
-        response = await client.get(url, headers=headers)
-        response.raise_for_status()
-        return response.json()
+    ie. who made change, what change, when, approval status
+    '''
+    return await firemon_api.get("/firewall/changes")
+    
+async def fetch_firewall_violations():
+    '''
+    Get policy violation reports
+
+    ie. rule violations, security gaps, risk scoring
+    '''
+    return await firemon_api.get("/firewall/violations")
